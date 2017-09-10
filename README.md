@@ -1,6 +1,6 @@
 # socket-mock
-A lightweight posix-c socket server
 ===================================
+A lightweight C socket server
 
 DESCRIPTION
 ==================================
@@ -21,12 +21,12 @@ The program must be started with the following parameters.
 
 * [--port=p] -> Port number (Must be root under 1080)
 * [--ip <ip>] -> Server IP, normally your ethernet interface IP address
-* [--file <path>] -> Path to a command/responses configuration file
+* [--file <path>] -> Path to a command/response configuration file
 
 
-COMMAND/RESPONSES CONFIGURATION FILE
+COMMAND/RESPONSE CONFIGURATION FILE
 ==================================
-If a command/responses file is set, the server will parse a file to look for recognized commands and answer the related response.
+If a command/response file is set, the server will parse a file to look for recognized commands and answer the related response.
 The file must be set up the following way:
 
 [COMMAND] || [RESPONSE]
@@ -34,7 +34,7 @@ The file must be set up the following way:
 
 Each line has a command and a corresponding response and the "||" serve as a delimiter. 
 Wildcard character "*" might be used to look only for the start or the end of a command.
-For exemple:
+For example:
 
 *PARTIALCOMMAND||{"jsonResult": "OK"}
 PARTIALCOMMAND*||hello world

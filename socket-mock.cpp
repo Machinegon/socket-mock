@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <deque>
@@ -17,7 +18,7 @@
 
 
 using namespace std;
-#define APP_VERSION "1.0.0.0"
+#define APP_VERSION "1.0.0.1"
 
 // ========== VARIABLES ============
 unsigned int port = 0;
@@ -109,15 +110,20 @@ int main(int argc, char **argv)
 		bNoFile = true;
 	}
 
-	// Parse command/responses file
+	// Parse command/response file
 	if(!bNoFile) {
 		ifstream infile(strFilePath);
 		string line;
 		int iCount = 1;
 		while (getline(infile, line)) 
 		{
+			if(count(line.begin(), line.end(), '*') > 1) { // Validate that there's only one wildcard per line
+				printf("command/response file syntax invalid. You're restricted to one wildcard (*) per line.\n");
+				return -1;
+			}
+			
 			struct commandResponse command;
-			size_t pos = line.find(delimiter);
+			size_t pos = line.find(delimiter);	
 			command.strCommand = line.substr(0, pos);
 			command.strResponse = line.substr(pos + delimiter.length(), line.length());
 			dqCommandResponses.push_front(command);

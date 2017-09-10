@@ -1,6 +1,4 @@
 # socket-mock
-===================================
-A lightweight C socket server
 
 DESCRIPTION
 ==================================
@@ -30,6 +28,7 @@ If a command/response file is set, the server will parse a file to look for reco
 The file must be set up the following way:
 
 [COMMAND] || [RESPONSE]
+
 [COMMAND] || [RESPONSE]
 
 Each line has a command and a corresponding response and the "||" serve as a delimiter. 
@@ -37,4 +36,5 @@ Wildcard character "*" might be used to look only for the start or the end of a 
 For example:
 
 *PARTIALCOMMAND||{"jsonResult": "OK"}
+
 PARTIALCOMMAND*||hello world

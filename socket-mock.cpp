@@ -18,7 +18,7 @@
 
 
 using namespace std;
-#define APP_VERSION "1.0.0.1"
+#define APP_VERSION "1.0.0.2"
 
 // ========== VARIABLES ============
 unsigned int port = 0;
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 				// Check if command is handled
 				struct commandResponse cmd = (commandResponse) *it;
 				string command2 = "";
-				if(cmd.strCommand.find(wildcard) != 0) {  // Wildcard ??
+				if(cmd.strCommand.find(wildcard) != -1) {  // Wildcard ??
 					size_t pos = cmd.strCommand.find(wildcard);
 					if(pos != 0) { // Wildcard at the end of string
 						command2 = cmd.strCommand.substr(0, (cmd.strCommand.length() - 1));

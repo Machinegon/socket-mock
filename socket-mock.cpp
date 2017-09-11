@@ -18,7 +18,7 @@
 
 
 using namespace std;
-#define APP_VERSION "1.0.0.2"
+#define APP_VERSION "1.0.0.3"
 
 // ========== VARIABLES ============
 unsigned int port = 0;
@@ -207,9 +207,10 @@ int main(int argc, char **argv)
 
 		if(!bNoFile) {
 			// Check if command is valid and answer
-			string command = (const char *) &buffer[0];
 			for(deque<commandResponse>::iterator it = dqCommandResponses.begin(); it!= dqCommandResponses.end(); it++) 
 			{
+				string command = (const char *) &buffer[0];
+				
 				// Check if command is handled
 				struct commandResponse cmd = (commandResponse) *it;
 				string command2 = "";
@@ -221,7 +222,8 @@ int main(int argc, char **argv)
 					}
 					else { // Wildcard at the start of string
 						command2 = cmd.strCommand.substr(1, cmd.strCommand.length());
-						command = command.substr(command.length() - command2.length(), command.length());
+						int cl = command.length()  < command2.length() ? 0: command.length() - command2.length();
+						command = command.substr(cl, command.length());
 					}
 				}
 				else {

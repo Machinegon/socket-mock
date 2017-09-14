@@ -18,7 +18,7 @@
 
 
 using namespace std;
-#define APP_VERSION "1.0.0.3"
+#define APP_VERSION "1.0.0.4"
 
 // ========== VARIABLES ============
 unsigned int port = 0;
@@ -117,8 +117,8 @@ int main(int argc, char **argv)
 		int iCount = 1;
 		while (getline(infile, line)) 
 		{
-			if(count(line.begin(), line.end(), '*') > 1) { // Validate that there's only one wildcard per line
-				printf("command/response file syntax invalid. You're restricted to one wildcard (*) per line.\n");
+			if(count(line.begin(), line.end(), '*') > 2) { // Validate that there's no more than 2
+				printf("command/response file syntax invalid. You're restricted to two wildcard (*) per line.\n");
 				return -1;
 			}
 			
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 	}
 
 	int sockfd, newsock;
-	char buffer[200];
+	char buffer[2048];
 	memset(buffer, 0, sizeof(buffer));
 
 	/*Creating a new socket*/
@@ -210,27 +210,35 @@ int main(int argc, char **argv)
 			for(deque<commandResponse>::iterator it = dqCommandResponses.begin(); it!= dqCommandResponses.end(); it++) 
 			{
 				string command = (const char *) &buffer[0];
+				bool bFindStr = false;
 				
 				// Check if command is handled
 				struct commandResponse cmd = (commandResponse) *it;
 				string command2 = "";
 				if(cmd.strCommand.find(wildcard) != -1) {  // Wildcard ??
 					size_t pos = cmd.strCommand.find(wildcard);
-					if(pos != 0) { // Wildcard at the end of string
-						command2 = cmd.strCommand.substr(0, (cmd.strCommand.length() - 1));
-						command = command.substr(0, command2.length());
+					if(count(cmd.strCommand.begin(), cmd.strCommand.end(), '*') == 1) { // One wildcard
+						if(pos != 0) { // Wildcard at the end of string
+							command2 = cmd.strCommand.substr(0, (cmd.strCommand.length() - 1));
+							command = command.substr(0, command2.length());
+						}
+						else { // Wildcard at the start of string
+							command2 = cmd.strCommand.substr(1, cmd.strCommand.length());
+							int cl = command.length()  < command2.length() ? 0: command.length() - command2.length();
+							command = command.substr(cl, command.length());
+						}
 					}
-					else { // Wildcard at the start of string
-						command2 = cmd.strCommand.substr(1, cmd.strCommand.length());
-						int cl = command.length()  < command2.length() ? 0: command.length() - command2.length();
-						command = command.substr(cl, command.length());
+					else {
+						// 2 Wildcards, get string in-between
+						command2 = cmd.strCommand.substr(1, (cmd.strCommand.length() - 2));
+						bFindStr = true;
 					}
 				}
 				else {
 					command2 = cmd.strCommand;
 				}
 
-				if(command.compare(command2.c_str()) == 0)
+				if(command.compare(command2.c_str()) == 0 || (bFindStr && command.find(command2) != -1))
 				{
 					// Command match, return response
 					if(write(newsock, cmd.strResponse.c_str(), cmd.strResponse.length()) < 0) {

@@ -17,7 +17,7 @@ USAGE
 ==================================
 The program must be started with the following parameters.
 
-* [--port=p] -> Port number (Must be root under 1080)
+* [--port=p] -> Port number (Must be root under 1024)
 * [--ip <ip>] -> Server IP, normally your ethernet interface IP address
 * [--file <path>] -> Path to a command/response configuration file
 
@@ -32,9 +32,9 @@ The file must be set up the following way:
 [COMMAND] || [RESPONSE]
 
 Each line has a command and a corresponding response and the "||" serve as a delimiter. 
-Wildcard character "*" might be used to look only for the start or the end of a command.
+Wildcard character "*" might be used to look only for the start or/and the end of a command.
 For example:
 
-*PARTIALCOMMAND||{"jsonResult": "OK"}
+*PARTIALCOMMAND*||{"jsonResult": "OK"}
 
 PARTIALCOMMAND*||hello world
